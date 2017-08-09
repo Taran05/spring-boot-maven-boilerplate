@@ -1,4 +1,4 @@
-Spring Boot Template Project
+Spring Boot Boilerplate with Maven
 ===================
 
 ### Prerequisites
