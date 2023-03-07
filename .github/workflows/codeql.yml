@@ -80,4 +80,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: codeql-results
-        path: ${{ github.workspace }}/qlpacks/ql-java/
+        path: /home/runner/work/_temp/codeql_databases/
