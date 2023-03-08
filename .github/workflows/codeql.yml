@@ -76,8 +76,17 @@ jobs:
       with:
             category: "/language:${{matrix.language}}"
             
+    - name: Export CodeQL Results
+      uses: github/codeql-action/results-exporter@v2
+      with:
+        format: sarif
+        output: codeql-results.sarif
+            
     - name: Upload CodeQL Analysis Results
       uses: actions/upload-artifact@v2
       with:
         name: codeql-results
-        path: /home/runner/work/_temp/codeql_databases/
+        path: /home/runner/work/_temp/codeql_databases/codeql-results.sarif
+    
+    
+    
