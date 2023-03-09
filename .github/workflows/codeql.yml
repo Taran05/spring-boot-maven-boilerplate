@@ -43,9 +43,17 @@ jobs:
           category: "Security"
           output: codeql-bqrs
 
+      # Checkout the result-exporter action repository
+      - name: Checkout result-exporter
+        uses: actions/checkout@v2
+        with:
+          repository: github/codeql-action
+          ref: v1
+          path: result-exporter
+
       # Export analysis results to JSON format
       - name: Export CodeQL results to JSON
-        uses: github/codeql-action/result-exporter@v1
-        with:
-          format: json
-          output: codeql-results.json
+        run: |
+          cd result-exporter
+          npm install
+          node dist/index.js -f json -o ../codeql-results.json ../codeql-bqrs/*.bqrs
