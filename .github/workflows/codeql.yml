@@ -74,7 +74,7 @@ jobs:
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
       with:
-            output-format: sarif-latest
+            output: sarif-latest
             category: "/language:${{matrix.language}}"
             
     - name: Upload CodeQL Analysis Results
