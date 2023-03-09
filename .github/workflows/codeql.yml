@@ -75,6 +75,12 @@ jobs:
       uses: github/codeql-action/analyze@v2
       with:
             category: "/language:${{matrix.language}}"
+                 
+    - name: Export CodeQL results to JSON
+      uses: github/codeql-action/result-exporter@v1
+      with:
+        format: json
+        output: codeql-results.json         
             
     - name: Upload CodeQL Analysis Results
       uses: actions/upload-artifact@v2
