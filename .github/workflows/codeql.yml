@@ -74,23 +74,9 @@ jobs:
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
       with:
-            category: "/language:${{matrix.language}}"
+        category: "/language:${{matrix.language}}"
             
-            
-    - name: Export CodeQL results to JSON
-      run: |
-        mkdir -p json-results
-        codeql bqrs decode --format=json $(find . -name '*.bqrs') > json-results/results.json
-
-    - name: Install codeql-bundle-utils
-      run: |
-        # Install codeql-bundle-utils
-        git clone https://github.com/github/codeql-bundle-utils.git
-        cd codeql-bundle-utils
-        npm install
-            
-    - name: Upload CodeQL Analysis Results
-      uses: actions/upload-artifact@v2
+    - name: Export Results to JSON
+      uses: codeql/action-result-exporter@v1
       with:
-        name: codeql-results
-        path: /home/runner/work/_temp/codeql_databases/
+        format: sarif
