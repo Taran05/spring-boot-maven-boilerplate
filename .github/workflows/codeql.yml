@@ -39,6 +39,9 @@ jobs:
       uses: github/codeql-action/analyze@v2
       with:
             category: "/language:${{matrix.language}}"
+            
+    - name: Checkout code
+      uses: actions/checkout@v2       
                  
     - name: Export CodeQL results to JSON
       uses: github/codeql-action/result-exporter@v1
