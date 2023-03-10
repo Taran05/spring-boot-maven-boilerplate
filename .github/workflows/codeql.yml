@@ -39,14 +39,12 @@ jobs:
         run: |
           mkdir -p json-results
           codeql bqrs decode --format=json $(find . -name '*.bqrs') > json-results/results.json
-
       - name: Install codeql-bundle-utils
         run: |
           # Install codeql-bundle-utils
           git clone https://github.com/github/codeql-bundle-utils.git
           cd codeql-bundle-utils
           npm install
-
       - name: Convert BQRS to SARIF
         run: |
           # Convert BQRS to SARIF
