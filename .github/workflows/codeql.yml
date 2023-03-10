@@ -1,4 +1,4 @@
-name: CodeQL Analysis
+name: "CodeQL"
 
 on:
   push:
@@ -10,8 +10,8 @@ on:
     - cron: '30 19 * * 5'
 
 jobs:
-  analysis:
-    name: Perform CodeQL Analysis
+  analyze:
+    name: Analyze
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -22,65 +22,56 @@ jobs:
       fail-fast: false
       matrix:
         language: [ 'java' ]
+        # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
+        # Use only 'java' to analyze code written in Java, Kotlin or both
+        # Use only 'javascript' to analyze code written in JavaScript, TypeScript or both
+        # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v2
       with:
         languages: ${{ matrix.language }}
 
+    # Autobuild attempts to build any compiled languages  (C/C++, C#, Go, or Java).
+    # If this step fails, then you should remove it and run the build manually (see below)
     - name: Autobuild
       uses: github/codeql-action/autobuild@v2
+
+    # ℹ️ Command-line programs to run using the OS shell.
+    # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
+
+    #   If the Autobuild fails above, remove it and uncomment the following three lines.
+    #   modify them (or add more) to build your code if your project, please refer to the EXAMPLE below for guidance.
+
+    # - run: |
+    #     echo "Run, Build Application using script"
+    #     ./location_of_script_within_repo/buildscript.sh
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
       with:
-            category: "/language:${{matrix.language}}"
-            
-    - name: Checkout code
-      uses: actions/checkout@v2       
+        category: "/language:${{matrix.language}}"
                  
-    - name: Export CodeQL results to JSON
-      uses: github/codeql-action/result-exporter@v1
-      with:
-        format: json
-        output: codeql-results.json         
-
-  export:
-    name: Export CodeQL Results
-    runs-on: ubuntu-latest
-    needs: analysis
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-      
-    - name: Download CodeQL Analysis Results
-      uses: actions/download-artifact@v2
-      with:
-        name: codeql-results
-        path: ./
-
+    - name: Convert BQRS to JSON
+      run: |
+        echo "Converting BQRS to JSON"
+        codeql-bundle-utils bqrs-to-results \
+          --output-format sarif-latest \
+          --output results.sarif \
+          ${{ env.CODEQL_ACTION_ANALYSIS_PATH }}/results/bqrs/
+        codeql-bundle-utils results-to-json \
+          --output results.json \
+          results.sarif
+            
     - name: Upload CodeQL Analysis Results
       uses: actions/upload-artifact@v2
       with:
         name: codeql-results
-        path: codeql-results.json
-
-  artifact:
-    name: Upload Artifacts
-    runs-on: ubuntu-latest
-    needs: export
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-      
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: analysis-artifacts
         path: |
           /home/runner/work/_temp/codeql_databases/
-          codeql-results.json
+          results.json
