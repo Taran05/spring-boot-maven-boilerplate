@@ -20,7 +20,8 @@ public class HelloworldController {
 	private HelloworldService hs;
 
 	@RequestMapping("/hello")
-	public ResponseEntity<String> home(HttpServletRequest req) throws Exception {
+	public ResponseEntity<String> Ihome(HttpServletRequest req) throws Exception {
+
 		return new ResponseEntity<String>(hs.sayHello(), HttpStatus.OK);
 	}
 
