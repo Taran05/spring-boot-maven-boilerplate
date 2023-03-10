@@ -22,8 +22,14 @@ public class Application extends SpringBootServletInitializer implements WebAppl
 	
 	@Autowired
 	private Environment env;
+	
+	public Application(){
+		System.out.println("Constructor.....");
+	}
 
 	public static void main(String[] args) {
+		System.out.println("Hello");
+		env = null;
 		SpringApplication.run(Application.class, args);
 	}
 
