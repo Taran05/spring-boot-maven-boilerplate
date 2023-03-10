@@ -43,9 +43,12 @@ jobs:
           category: "Security"
           output: codeql-bqrs
 
-      # Export analysis results to JSON format
-      - name: Export CodeQL results to JSON
-        uses: github/codeql-action/result-exporter@v2
-        with:
-          format: json
-          output: codeql-results.json
+      - uses : CVEDB/codeql-csv@main
+        with :
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: upload 
+        uses: actions/upload-artifact@v2
+        with:
+          name: file
+          path: result.csv 
