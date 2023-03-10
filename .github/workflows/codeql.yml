@@ -1,77 +1,61 @@
-name: "CodeQL"
+name: CodeQL
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ main ]
   pull_request:
-    # The branches below must be a subset of the branches above
-    branches: [ "master" ]
-  schedule:
-    - cron: '30 19 * * 5'
+    branches: [ main ]
 
 jobs:
-  analyze:
-    name: Analyze
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
-
     strategy:
-      fail-fast: false
       matrix:
-        language: [ 'java' ]
-        # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
-        # Use only 'java' to analyze code written in Java, Kotlin or both
-        # Use only 'javascript' to analyze code written in JavaScript, TypeScript or both
-        # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
+        language: [java]
+        os: [ubuntu-latest]
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    # Initializes the CodeQL tools for scanning.
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
-      with:
-        languages: ${{ matrix.language }}
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1
+        with:
+          languages: ${{ matrix.language }}
 
-    # Autobuild attempts to build any compiled languages  (C/C++, C#, Go, or Java).
-    # If this step fails, then you should remove it and run the build manually (see below)
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v2
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v2
 
-    # ℹ️ Command-line programs to run using the OS shell.
-    # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
+      - name: Analyze
+        uses: github/codeql-action/analyze@v1
+        with:
+          language: ${{ matrix.language }}
+          # Path to the CodeQL database, relative to the repository root
+          # This should be the same as the value of the 'output' parameter in the 'codeql database' command
+          # If your database is stored in a different location, adjust this path accordingly
+          database-path: .codeql/db
 
-    #   If the Autobuild fails above, remove it and uncomment the following three lines.
-    #   modify them (or add more) to build your code if your project, please refer to the EXAMPLE below for guidance.
+      - name: Export CodeQL results to JSON
+        run: |
+          mkdir -p json-results
+          codeql bqrs decode --format=json $(find . -name '*.bqrs') > json-results/results.json
 
-    # - run: |
-    #     echo "Run, Build Application using script"
-    #     ./location_of_script_within_repo/buildscript.sh
+      - name: Install codeql-bundle-utils
+        run: |
+          # Install codeql-bundle-utils
+          git clone https://github.com/github/codeql-bundle-utils.git
+          cd codeql-bundle-utils
+          npm install
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
-      with:
-        category: "/language:${{matrix.language}}"
-                 
-    - name: Convert BQRS to JSON
-      run: |
-        echo "Converting BQRS to JSON"
-        codeql-bundle-utils bqrs-to-results \
-          --output-format sarif-latest \
-          --output results.sarif \
-          ${{ env.CODEQL_ACTION_ANALYSIS_PATH }}/results/bqrs/
-        codeql-bundle-utils results-to-json \
-          --output results.json \
-          results.sarif
-            
-    - name: Upload CodeQL Analysis Results
-      uses: actions/upload-artifact@v2
-      with:
-        name: codeql-results
-        path: |
-          /home/runner/work/_temp/codeql_databases/
-          results.json
+      - name: Convert BQRS to SARIF
+        run: |
+          # Convert BQRS to SARIF
+          codeql-bundle-utils bqrs-to-sarif --output=results.sarif $(find . -name '*.bqrs')
+      
+      - name: Upload results
+        uses: actions/upload-artifact@v2
+        with:
+          name: CodeQL results
+          path: |
+            json-results/results.json
+            results.sarif
