@@ -67,18 +67,4 @@ jobs:
             # Adds more detail to both client and server-side analysis logs, activating DEBUG mode for the scanner, and adding client-side environment variables and system properties to the server-side log of analysis report processing.
             #-Dsonar.verbose= # optional, default is false
             
-      - name: Download SonarCloud report
-        uses: SonarSource/sonarcloud-github-action@master
-        with:
-          organization: Taran05
-          project: spring-boot-maven-boilerplate
-          token: ${{ secrets.SONAR_TOKEN }}
-          extraProperties: |
-            sonar.verbose=true
-        id: download-report
-
-      - name: Upload SonarCloud report as artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: SonarCloud report
-          path: ${{ steps.download-report.outputs.report-path }}
+     
