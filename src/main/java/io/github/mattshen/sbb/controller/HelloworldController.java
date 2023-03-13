@@ -18,6 +18,8 @@ public class HelloworldController {
 
 	@Autowired
 	private HelloworldService hs;
+	
+	int i=0;
 
 	@RequestMapping("/hello")
 	public ResponseEntity<String> Ihome(HttpServletRequest req) throws Exception {
