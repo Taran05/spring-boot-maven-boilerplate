@@ -25,6 +25,5 @@ jobs:
           java -jar DesigniteJava.jar -ci -repo $GITHUB_REPOSITORY -pat ${{ secrets.PAT }}
           ls
           ls Designite_output/
-          curl -u taranjot20@gmail.com:${{ secrets.GITHUB_TOKEN }} -X PUT -H "Content-Type: multipart/form-data" -F "file=@Designite_output/DesigniteAnalysis.xml" "https://api.github.com/repos/$GITHUB_REPOSITORY/contents/Designite_output/DesigniteAnalysis.xml"
+          curl -u taranjot20@gmail.com:${{ secrets.GITHUB_TOKEN }} -X PUT -H "Content-Type: multipart/form-data" -F "file=@Designite_output/DesigniteAnalysis.xml" "/home/runner/work/spring-boot-maven-boilerplate/spring-boot-maven-boilerplate/Designite_output/DesigniteAnalysis.xml"
                                                
-          
