@@ -1,18 +1,24 @@
-name: Designite analysis
 
-on: [push]
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
-  designite:
+  build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup Java
-      uses: actions/setup-java@v2
-      with:
-        java-version: '11'
-    - name: Run Designite
-      run: |
-        wget https://designite-tools.com/files/designite-cli-6.2.2.jar
-        java -jar designite-cli-6.2.2.jar -i ./src -o ./designite-results
-      working-directory: ${{github.workspace}}
+      - uses: actions/checkout@v2
+      - name: Build with Maven
+        run: mvn clean install
+      - name: Download DesigniteJava
+        run: wget "https://www.designite-tools.com/static/download/DJE/DesigniteJava.jar"
+      - name: Analyze project with DesigniteJava
+        run: |
+          java -jar DesigniteJava.jar -ci -repo $GITHUB_REPOSITORY -pat ${{ secrets.PAT }}
+          ls
+          curl -X PUT -H "repository-link:https://github.com/" + GITHUB_REPOSITORY -H "username: taranjot20@gmail.com" -H "Content-Type: mulitpart/form-data" --url "https://qscored.com/api/upload/file.xml?is_open_access=off&version=$GITHUB_RUN_NUMBER&project_name=spring-boot-maven-boilerplate" -F "file=@Designite_output/DesigniteAnalysis.xml"                                                           
+          
