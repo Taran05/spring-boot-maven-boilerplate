@@ -1,11 +1,11 @@
 
-name: CI
+name: Designite Workflow
 
 on:
   push:
-    branches: [ master ]
+    branches: [ '*' ]
   pull_request:
-    branches: [ master ]
+    branches: [ '*' ]
 
 jobs:
   build:
@@ -16,15 +16,10 @@ jobs:
         run: mvn clean install
       - name: Download DesigniteJava
         run: wget "https://www.designite-tools.com/static/download/DJE/DesigniteJava.jar"
-      - name: List contents of current directory
-        run: |
-          pwd
-          ls -al
       - name: Analyze project with DesigniteJava
         run: |
           java -jar DesigniteJava.jar -ci -repo $GITHUB_REPOSITORY -pat ${{ secrets.PAT }}
           ls
-          ls Designite_output/
       - name: Upload Designite results as artifact
         uses: actions/upload-artifact@v2
         with:
