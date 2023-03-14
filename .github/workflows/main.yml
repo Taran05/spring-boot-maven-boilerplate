@@ -20,5 +20,5 @@ jobs:
         run: |
           java -jar DesigniteJava.jar -ci -repo $GITHUB_REPOSITORY -pat ${{ secrets.PAT }}
           ls
-          curl -X PUT -H "repository-link:https://github.com/" + `$GITHUB_REPOSITORY` -H "username: taranjot20@gmail.com" -H "Content-Type: mulitpart/form-data" "file=@Designite_output/DesigniteAnalysis.xml"                                                           
+          curl -X PUT -H "repository-link:https://github.com/" + GITHUB_REPOSITORY -H "username: taranjot20@gmail.com" -H "Content-Type: mulitpart/form-data" "file=@Designite_output/DesigniteAnalysis.xml"                                                           
           
