@@ -1,0 +1,18 @@
+name: Designite analysis
+
+on: [push]
+
+jobs:
+  designite:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup Java
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+    - name: Run Designite
+      run: |
+        wget https://designite-tools.com/files/designite-cli-6.2.2.jar
+        java -jar designite-cli-6.2.2.jar -i ./src -o ./designite-results
+      working-directory: ${{github.workspace}}
