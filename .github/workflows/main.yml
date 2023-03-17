@@ -25,3 +25,12 @@ jobs:
         with:
           name: DesigniteAnalysis
           path: Designite_output/DesigniteAnalysis.xml
+      - name: Download DesigniteAnalysis artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: DesigniteAnalysis
+          path: Designite_output
+      - name: Send DesigniteAnalysis.xml to Spring Boot app
+        run: |
+          curl -F "file=@Designite_output/DesigniteAnalysis.xml" \
+               http://localhost:3000/analysis
