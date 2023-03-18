@@ -32,4 +32,4 @@ jobs:
           path: Designite_output
       - name: Send DesigniteAnalysis.xml to Spring Boot app
         run: |
-          curl -X GET http://localhost:3000/getRepositories
+          curl -X POST -F 'file=@Designite_output/DesigniteAnalysis.xml' https://smee.io/YbngbAsRvzti2Z3E/analysis
